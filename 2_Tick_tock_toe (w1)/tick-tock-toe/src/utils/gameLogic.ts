@@ -48,7 +48,6 @@ export function isGameOver(board: Board): boolean {
     return checkWinner(board) !== null || isDraw(board);
 }
 
-
 //
 export function getAvailableMoves(board: Board): number[] {
     return board.reduce<number[]>((moves, cell, index) => {
