@@ -1,40 +1,47 @@
-import { useState } from "react";
-import "./App.css";
-import Game from "./components/Game";
-import { type Difficulty } from "./utils/ai";
-import Menu from "./components/Menu";
-import { useGameScore } from "./hooks/useGameScore";
+import { useState } from "react"
+import "./App.css"
+import Game from "./components/Game"
+import { type Difficulty } from "./utils/ai"
+import Menu from "./components/Menu"
+import { useGameScore } from "./hooks/useGameScore"
+import OnlineGame from "./components/OnlineGame"
 
-type Screen = "menu" | "game";
+type Screen = "menu" | "game" | "online"
 
 function App() {
-  const [currentScreen, setCurrentScreen] = useState<Screen>("menu");
+  const [currentScreen, setCurrentScreen] = useState<Screen>("menu")
   const [selectedDifficulty, setSelectedDifficulty] =
-    useState<Difficulty>("hard");
+    useState<Difficulty>("hard")
 
   const handleBackToMenu = () => {
-    setCurrentScreen("menu");
-  };
+    setCurrentScreen("menu")
+  }
 
   const handleStartGame = (difficulty: Difficulty) => {
-    setSelectedDifficulty(difficulty);
-    setCurrentScreen("game");
-  };
+    setSelectedDifficulty(difficulty)
+    setCurrentScreen("game")
+  }
 
-  const { score, addWin, addLoss, addDraw, resetScore } = useGameScore();
+  const handleStartOnlineGame = () => {
+    setCurrentScreen("online")
+  }
+
+  const { score, addWin, addLoss, addDraw, resetScore } = useGameScore()
 
   return (
     <>
-      {currentScreen === "menu" ? (
+      {currentScreen === "menu" && (
         <Menu
           onStartGame={handleStartGame}
+          onStartOnlineGame={handleStartOnlineGame}
           wins={score.wins}
           losses={score.losses}
           draws={score.draws}
           currentStreak={score.currentStreak}
           onResetScore={resetScore}
         />
-      ) : (
+      )}
+      {currentScreen === "game" && (
         <Game
           difficulty={selectedDifficulty}
           onWin={addWin}
@@ -43,8 +50,16 @@ function App() {
           onBackToMenu={handleBackToMenu}
         />
       )}
+      {currentScreen === "online" && (
+        <OnlineGame
+          onWin={addWin}
+          onLoss={addLoss}
+          onDraw={addDraw}
+          onBackToMenu={handleBackToMenu}
+        />
+      )}
     </>
-  );
+  )
 }
 
-export default App;
+export default App
