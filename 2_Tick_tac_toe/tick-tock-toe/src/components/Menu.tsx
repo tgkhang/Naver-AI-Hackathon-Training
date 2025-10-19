@@ -5,6 +5,7 @@ import { WebSocketService } from "../utils/websocket"
 interface MenuProps {
   onStartGame: (difficulty: Difficulty) => void
   onStartOnlineGame: () => void
+  onStartLocalGame: () => void
   wins: number
   losses: number
   draws: number
@@ -15,6 +16,7 @@ interface MenuProps {
 function Menu({
   onStartGame,
   onStartOnlineGame,
+  onStartLocalGame,
   wins,
   losses,
   draws,
@@ -24,14 +26,14 @@ function Menu({
   const [isServerAvailable, setIsServerAvailable] = useState<boolean>(false)
 
   useEffect(() => {
-    console.log('Menu: Testing WebSocket server connection...')
+    console.log("Menu: Testing WebSocket server connection...")
     WebSocketService.testConnection()
       .then((available) => {
-        console.log('Menu: Server availability:', available)
+        console.log("Menu: Server availability:", available)
         setIsServerAvailable(available)
       })
       .catch((error) => {
-        console.error('Menu: Server test failed:', error)
+        console.error("Menu: Server test failed:", error)
         setIsServerAvailable(false)
       })
   }, [])
@@ -93,12 +95,22 @@ function Menu({
           </h2>
 
           <button
+            onClick={() => onStartLocalGame()}
+            className='w-full py-4 px-6 bg-sky-600 text-white rounded-lg font-bold text-xl
+                     hover:bg-sky-700 active:scale-95 transition-all shadow-lg
+                     flex items-center justify-between'
+          >
+            <span>Hot Seat Mode (10x10)</span>
+            <span className='text-sm font-normal'>Local Multiplayer</span>
+          </button>
+
+          <button
             onClick={() => onStartGame("easy")}
             className='w-full py-4 px-6 bg-green-600 text-white rounded-lg font-bold text-xl
                      hover:bg-green-700 active:scale-95 transition-all shadow-lg
                      flex items-center justify-between'
           >
-            <span>Easy Mode</span>
+            <span>Easy Mode (3x3)</span>
             <span className='text-sm font-normal'>Beatable AI</span>
           </button>
 
@@ -108,7 +120,7 @@ function Menu({
                      hover:bg-red-700 active:scale-95 transition-all shadow-lg
                      flex items-center justify-between'
           >
-            <span>Hard Mode</span>
+            <span>Hard Mode (3x3)</span>
             <span className='text-sm font-normal'>Unbeatable AI</span>
           </button>
 
@@ -124,12 +136,12 @@ function Menu({
                      }`}
             disabled={isServerAvailable === false}
           >
-            <span>Play Online</span>
+            <span>Play Online (3x3)</span>
             <span className='text-sm font-normal'>
               {isServerAvailable === null
                 ? "Checking..."
                 : isServerAvailable
-                ? 'Play with real person'
+                ? "Play with real person"
                 : "Server Offline"}
             </span>
           </button>

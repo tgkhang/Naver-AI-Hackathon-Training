@@ -5,8 +5,9 @@ import { type Difficulty } from "./utils/ai"
 import Menu from "./components/Menu"
 import { useGameScore } from "./hooks/useGameScore"
 import OnlineGame from "./components/OnlineGame"
+import LocalMultiplayerGame from "./components/LocalMultiplayerGame"
 
-type Screen = "menu" | "game" | "online"
+type Screen = "menu" | "game" | "online" | "local-multiplayer"
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>("menu")
@@ -26,6 +27,10 @@ function App() {
     setCurrentScreen("online")
   }
 
+  const handleStartLocalGame = () => {
+    setCurrentScreen("local-multiplayer")
+  }
+
   const { score, addWin, addLoss, addDraw, resetScore } = useGameScore()
 
   return (
@@ -34,6 +39,7 @@ function App() {
         <Menu
           onStartGame={handleStartGame}
           onStartOnlineGame={handleStartOnlineGame}
+          onStartLocalGame={handleStartLocalGame}
           wins={score.wins}
           losses={score.losses}
           draws={score.draws}
@@ -57,6 +63,9 @@ function App() {
           onDraw={addDraw}
           onBackToMenu={handleBackToMenu}
         />
+      )}
+      {currentScreen === "local-multiplayer" && (
+        <LocalMultiplayerGame onBackToMenu={handleBackToMenu} />
       )}
     </>
   )
